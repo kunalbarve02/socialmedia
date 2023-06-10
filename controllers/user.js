@@ -3,9 +3,15 @@ const User = require("../models/user");
 exports.getUserProfile = async(req, res) => {
     let userId = req.query.otherUserId
 
-    var user = await User.findById(userId)
-    .select("-password")
-    .populate("opento", "_id name username")
+    try{
+        var user = await User.findById(userId)
+        .select("-password")
+        .populate("opento", "_id name username")
+    }catch(err) {
+        return res.status(400).json({
+            error: "User not found"
+        });
+    }
 
     var opentoIds = user.opento.map(obj => obj._id)
 
@@ -34,6 +40,7 @@ exports.changeProfileMode = (req, res) => {
         res.json("Profile mode changed successfully");
     })
     .catch(err => {
+        console.log(err);
         return res.status(400).json({
             error: "Could not change profile mode"
         });
@@ -60,21 +67,13 @@ exports.addInOpento = async(req, res) => {
     }
 
     user.opento.push(otherUserId);
-    otherUser.opento.push(userId);
 
     user.save()
     .then(user => {
-        otherUser.save()
-        .then(otherUser => {
-            res.json("User added successfully");
-        })
-        .catch(err => {
-            return res.status(400).json({
-                error: "Could not add user"
-            });
-        })
+        res.json("User added successfully");
     })
     .catch(err => {
+        console.log(err);
         return res.status(400).json({
             error: "Could not add user"
         });

@@ -1,3 +1,4 @@
+const user = require("../models/user");
 const User = require("../models/user");
 
 exports.getUserProfile = async(req, res) => {
@@ -110,19 +111,10 @@ exports.removeFromOpento = async(req, res) => {
     }
 
     user.opento.pull(otherUserId);
-    otherUser.opento.pull(userId);
 
     user.save()
     .then(user => {
-        otherUser.save()
-        .then(otherUser => {
-            res.json("User removed successfully");
-        })
-        .catch(err => {
-            return res.status(400).json({
-                error: "Could not remove user"
-            });
-        })
+        res.json("User removed successfully");
     })
     .catch(err => {
         return res.status(400).json({
@@ -133,4 +125,35 @@ exports.removeFromOpento = async(req, res) => {
 
 exports.getSelfProfile = (req, res) => {
     return res.json(req.profile);
+}
+
+exports.editUsername = (req, res) => {
+    let user = req.profile;
+    user.username = req.body.username;
+    user.save()
+    .then(user => {
+        res.json("Username changed successfully");
+    })
+    .catch(err => {
+        return res.status(400).json({
+            error: "Could not change username"
+        });
+    })
+}
+
+exports.editUserBio = (req, res) => {
+    let user = req.profile;
+    user.bio = req.body.bio;
+
+    user.save()
+    .then(user => {
+        res.json("Bio added successfully");
+    }
+    )
+    .catch(err => {
+        console.log(err);
+        return res.status(400).json({
+            error: "Could not add bio"
+        });
+    })
 }

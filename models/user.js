@@ -26,6 +26,12 @@ var userSchema = new mongoose.Schema(
       required: true,
       unique: true
     },
+    bio: {
+      type: String,
+      trim: true,
+      maxlength: 200,
+      default: ""
+    },
     encry_password: {
       type: String,
       required: true

@@ -60,8 +60,8 @@ exports.signin = (req, res) => {
       const token = jwt.sign({ _id: user._id }, process.env.SECRET);
       res.cookie("token", token, { expire: new Date() + 9999 });
   
-      const { _id, name, email, username } = user;
-      return res.json({ user: { id:_id, name, email, token, username } });
+      const { _id, name, email, username, opento, isOpen } = user;
+      return res.json({ user: { id:_id, name, email, token, username, opento, isOpen } });
     })
     .catch(err => {
       console.log(err);

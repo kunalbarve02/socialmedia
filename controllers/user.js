@@ -9,6 +9,10 @@ exports.getUserProfile = async(req, res) => {
         });
     }
 
+    if(userId == req.profile._id) {
+        return res.json(req.profile);
+    }
+
     try{
         var user = await User.findById(userId)
         .select("-password")
